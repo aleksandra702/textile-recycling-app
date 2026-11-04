@@ -1,0 +1,26 @@
+{
+  "name": "textile-recycling-app",
+  "version": "1.0.0",
+  "description": "Приложение для сдачи текстиля на переработку",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleksandra702/textile-recycling-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/aleksandra702/textile-recycling-app/issues"
+  },
+  "homepage": "https://github.com/aleksandra702/textile-recycling-app#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0"
+  }
+}

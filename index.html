@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♻️ Переработка текстиля в России</title>
+    <!-- ВОТ ЗДЕСЬ ПОДКЛЮЧЕНА ВАША ИКОНКА -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f7f0;
+            color: #1a2e1a;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .app {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 40, 0, 0.08);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e4d2b, #2e7d4a);
+            color: #fff;
+            padding: 32px 28px 24px;
+        }
+
+        header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+        header p { margin-top: 8px; opacity: 0.85; font-size: 1rem; }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #e8f0e8;
+            padding: 6px;
+            margin: 0 20px;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 18px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #3a5a3a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover { background: #d4e4d4; }
+        .tab-btn.active { background: #2e7d4a; color: #fff; box-shadow: 0 4px 12px rgba(46, 125, 74, 0.3); }
+
+        .filter-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 20px 6px;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a6a4a;
+            margin-right: 4px;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border: 1px solid #b8d4b8;
+            background: #fff;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #3a5a3a;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover { background: #e8f0e8; }
+        .filter-btn.active { background: #2e7d4a; color: #fff; border-color: #2e7d4a; }
+
+        .search-input {
+            flex: 1;
+            min-width: 180px;
+            padding: 8px 14px;
+            border: 1px solid #b8d4b8;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #1a2e1a;
+            background: #fff;
+        }
+
+        .search-input:focus { outline: 2px solid #8ab88a; }
+        .search-input::placeholder { color: #8aaa8a; }
+
+        .geo-btn, .fav-btn {
+            padding: 7px 14px;
+            border: 1px solid #b8d4b8;
+            background: #fff;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #3a5a3a;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .geo-btn:hover, .fav-btn:hover { background: #e8f0e8; }
+        .geo-btn:disabled { opacity: 0.6; cursor: wait; }
+        .geo-btn.active { background: #2e7d4a; color: #fff; border-color: #2e7d4a; }
+        .fav-btn { border-color: #e8c860; }
+        .fav-btn.active { background: #f5b800; color: #4a3500; border-color: #f5b800; }
+
+        .tab-content { display: none; padding: 24px 28px 32px; }
+        .tab-content.active { display: block; }
+
+        .region-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e4d2b;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d4e8d4;
+        }
+
+        .city-block { margin-bottom: 28px; }
+
+        .city-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2e7d4a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .city-name .badge {
+            font-size: 0.7rem;
+            background: #d4e8d4;
+            color: #1e4d2b;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .group-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 16px 0 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .group-title.good {
+            background: #e6f5e6;
+            color: #1e6b2e;
+            border-left: 4px solid #2e9d4a;
+        }
+
+        .group-title.any {
+            background: #e6f0fa;
+            color: #1e4a7a;
+            border-left: 4px solid #2e7aca;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .card {
+            position: relative;
+            background: #f8fcf8;
+            border: 1px solid #dceadc;
+            border-radius: 16px;
+            padding: 18px 20px 18px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30, 77, 43, 0.08); }
+
+        .card h4 { font-size: 1rem; font-weight: 700; color: #1e4d2b; margin-bottom: 6px; padding-right: 34px; }
+        .card .address { font-size: 0.9rem; color: #4a6a4a; margin-bottom: 4px; }
+        .card .contact { font-size: 0.9rem; color: #2e7d4a; font-weight: 600; }
+        .card .note { font-size: 0.82rem; color: #6a8a6a; margin-top: 6px; font-style: italic; }
+
+        .star-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            border-radius: 50%;
+            color: #c8d4c8;
+            transition: color 0.15s, background 0.15s, transform 0.15s;
+            z-index: 2;
+        }
+
+        .star-btn:hover { background: #f0f8f0; transform: scale(1.1); }
+        .star-btn.active { color: #f5b800; }
+
+        .distance-badge {
+            display: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2e7d4a;
+            background: #e6f5e6;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin: 4px 0 4px;
+            width: fit-content;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin: 4px 0 6px;
+        }
+
+        .status-badge.open { background: #d4f4d4; color: #1e6b2e; }
+        .status-badge.closed { background: #fde0e0; color: #a03030; }
+
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .map-btn, .share-btn, .call-btn {
+            padding: 6px 13px;
+            background: #e8f0e8;
+            border: 1px solid #b8d4b8;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e4d2b;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .map-btn:hover, .share-btn:hover, .call-btn:hover { background: #d4e8d4; }
+        .call-btn { background: #dceafa; border-color: #a8c8ea; color: #1e4a7a; }
+        .call-btn:hover { background: #c8ddf4; }
+
+        .map-container {
+            display: none;
+            height: 240px;
+            margin-top: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #dceadc;
+        }
+
+        .map-container.visible { display: block; }
+        .map-container iframe { width: 100%; height: 100%; border: 0; }
+
+        .empty-filter {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6a8a6a;
+            font-size: 1rem;
+        }
+
+        .rules-list { list-style: none; display: grid; gap: 12px; }
+
+        .rules-list li {
+            background: #f8fcf8;
+            border-left: 4px solid #2e7d4a;
+            padding: 14px 18px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+        }
+
+        .rules-list li strong { color: #1e4d2b; }
+
+        .tool-box {
+            background: #f8fcf8;
+            border: 1px solid #dceadc;
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
+        }
+
+        .tool-box h3 {
+            font-size: 1.1rem;
+            color: #1e4d2b;
+            margin-bottom: 14px;
+        }
+
+        .weight-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .weight-row label { font-size: 0.95rem; color: #3a5a3a; font-weight: 600; }
+
+        .weight-row input {
+            width: 110px;
+            padding: 8px 12px;
+            border: 1px solid #b8d4b8;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e4d2b;
+            font-family: inherit;
+        }
+
+        .weight-row input:focus { outline: 2px solid #8ab88a; }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 10px;
+        }
+
+        .calc-item {
+            background: #fff;
+            border: 1px solid #dceadc;
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .calc-item .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2e7d4a;
+            line-height: 1.2;
+        }
+
+        .calc-item .label {
+            font-size: 0.78rem;
+            color: #5a7a5a;
+            margin-top: 4px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: #fff;
+            border: 1px solid #dceadc;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+
+        .checklist-item:hover { background: #f0f8f0; }
+        .checklist-item input { width: 18px; height: 18px; cursor: pointer; accent-color: #2e7d4a; }
+        .checklist-item.checked { background: #eaf6ea; border-color: #a8d0a8; }
+
+        .progress-wrap {
+            height: 8px;
+            background: #e0ece0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 16px 0 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #8ab88a;
+            border-radius: 6px;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .progress-bar.done { background: #2e9d4a; }
+
+        .ready-text {
+            font-size: 0.9rem;
+            color: #5a7a5a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .ready-btn {
+            padding: 10px 26px;
+            background: #2e7d4a;
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .ready-btn:disabled { background: #c0d4c0; cursor: not-allowed; }
+        .ready-btn:not(:disabled):hover { background: #1e6b3e; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1e4d2b;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 1000;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4rem; }
+            .tab-btn { font-size: 0.82rem; padding: 10px 12px; }
+            .tab-content { padding: 16px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .filter-bar { padding: 10px 12px 4px; }
+            .filter-btn { font-size: 0.72rem; padding: 5px 10px; }
+            .search-input { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <header>
+        <h1>♻️ Переработка текстиля</h1>
+        <p>Куда сдать старую одежду в Курганской области и других городах России</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="kurgan">📍 Курганская область</button>
+        <button class="tab-btn" data-tab="russia">🏙️ Другие города</button>
+        <button class="tab-btn" data-tab="rules">✅ Подготовка одежды</button>
+        <button class="tab-btn" data-tab="tools">🧮 Калькулятор и чек-лист</button>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+        <div class="filter-row">
+            <span class="filter-label">Тип:</span>
+            <button class="filter-btn active" data-type="all">Все</button>
+            <button class="filter-btn" data-type="upper">👕 Верхняя</button>
+            <button class="filter-btn" data-type="shoes">👟 Обувь</button>
+            <button class="filter-btn" data-type="kids">🧒 Детское</button>
+            <button class="filter-btn" data-type="bedding">🛏️ Постельное</button>
+            <button class="filter-btn" data-type="worn">🧦 Ветхое</button>
+        </div>
+        <div class="filter-row">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по названию или адресу">
+            <button class="geo-btn" id="geoBtn">📍 Рядом со мной</button>
+            <button class="fav-btn" id="favBtn">⭐ Избранное (<span id="favCount">0</span>)</button>
+        </div>
+    </div>
+
+    <!-- ================= КУРГАНСКАЯ ОБЛАСТЬ ================= -->
+    <div id="tab-kurgan" class="tab-content active">
+        <div class="region-title">Курганская область</div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Курган <span class="badge">областной центр</span></div>
+
+            <div class="group-title good">🟢 Хорошее состояние — носка, комиссия, благотворительность</div>
+            <div class="card-grid">
+
+                <div class="card" data-lat="55.4362" data-lng="65.3391" data-types="upper,shoes,kids"
+                     data-schedule='{"days":{"0":[900,1020],"4":[1080,1170],"6":[660,780]}}'>
+                    <h4>Экопункт «РаСбор»</h4>
+                    <div class="address">ул. Урицкого, 36/4 (вход с ул. Томина, ориентир — магазин «Всё в дом»)</div>
+                    <div class="contact">Режим работы: чт 18:00–19:30, сб 11:00–13:00, вс 15:00–17:00</div>
+                    <div class="note">Принимают одежду, обувь, игрушки, книги. Работает обменник.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-lat="55.444577" data-lng="65.349992" data-types="upper">
+                    <h4>Комиссионный магазин «Курган-Финанс»</h4>
+                    <div class="address">ул. Пролетарская, 52</div>
+                    <div class="contact">+7 (3522) 23-13-22</div>
+                    <div class="note">Принимают одежду в хорошем состоянии за деньги или на комиссию.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-lat="55.4391736" data-lng="65.3436718" data-types="upper">
+                    <h4>Комиссионный магазин «Одежда из Европы»</h4>
+                    <div class="address">ул. Ленина, 22</div>
+                    <div class="contact">+7 (912) 970-99-09</div>
+                    <div class="note">Покупка и комиссия брендовых вещей.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-lat="55.450246" data-lng="65.373359" data-types="upper">
+                    <h4>Магазин «Юзи»</h4>
+                    <div class="address">ул. Карла Маркса, 106</div>
+                    <div class="contact">+7 (905) 853-87-91</div>
+                    <div class="note">Прием одежды, работа с секонд-хенд.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-types="upper">
+                    <h4>Благотворительная организация «Новая жизнь»</h4>
+                    <div class="address">г. Курган (адрес уточняйте в организации)</div>
+                    <div class="contact">—</div>
+                    <div class="note">Принимают одежду для нуждающихся. Вещи должны быть чистыми и в хорошем состоянии.</div>
+                </div>
+
+                <div class="card" data-lat="55.455698" data-lng="65.321759" data-types="upper,shoes">
+                    <h4>Пункт помощи при храме Порт-Артурской иконы Божией Матери</h4>
+                    <div class="address">ул. Ястрембского, 41А (территория «Курганприбор»)</div>
+                    <div class="contact">—</div>
+                    <div class="note">Принимают одежду и обувь для нуждающихся.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+            </div>
+
+            <div class="group-title any">🔄 Любое состояние — на переработку и вторсырьё</div>
+            <div class="card-grid">
+                <div class="card" data-lat="55.439153" data-lng="65.315962" data-types="upper,shoes,kids,bedding,worn">
+                    <h4>Экоцентр «Разделяйка» (в рамках акции «Ярмарка добра»)</h4>
+                    <div class="address">ул. Зорге, 39 (здание департамента социальной политики)</div>
+                    <div class="contact">—</div>
+                    <div class="note">Пункт сбора в рамках благотворительной акции. Принимают в том числе ветхий текстиль.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Шадринск <span class="badge">Курганская область</span></div>
+
+            <div class="group-title any">🔄 Любое состояние — на переработку и вторсырьё</div>
+            <div class="card-grid">
+
+                <div class="card" data-lat="56.083511" data-lng="63.641039" data-types="upper,shoes,kids,bedding,worn"
+                     data-schedule='{"days":{"0":[720,900],"6":[720,900]}}'>
+                    <h4>Экоцентр «Разделяйка_Шадринск»</h4>
+                    <div class="address">ул. Октябрьская, 123 (во дворе)</div>
+                    <div class="contact">Режим работы: сб–вс 12:00–15:00</div>
+                    <div class="note">Принимают более 40 видов вторсырья, включая одежду и текстиль.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-lat="56.092742" data-lng="63.601522" data-types="upper,shoes,kids,bedding,worn"
+                     data-schedule='{"days":{"3":[1080,1140]}}'>
+                    <h4>Пункт приема (район вокзала)</h4>
+                    <div class="address">ул. Архангельского, 50/1</div>
+                    <div class="contact">Режим работы: ср 18:00–19:00</div>
+                    <div class="note">Прием вторсырья, в том числе текстиля.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+                <div class="card" data-lat="56.0870" data-lng="63.6297" data-types="upper,shoes,kids,bedding,worn"
+                     data-schedule='{"days":{"0":[780,840]}}'>
+                    <h4>Пункт приема (Новый поселок)</h4>
+                    <div class="address">ГСК на пересечении ул. Тюменской и Проектной, гараж №58</div>
+                    <div class="contact">Режим работы: вс 13:00–14:00</div>
+                    <div class="note">Прием вторсырья, включая одежду.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="city-block">
+            <div class="city-name">📍 Другие населенные пункты</div>
+
+            <div class="group-title any">🔄 Любое состояние — раздельный сбор</div>
+            <div class="card-grid">
+                <div class="card" data-lat="55.3741101" data-lng="65.8091244" data-types="upper,shoes,kids,bedding,worn">
+                    <h4>Пункт приема одежды (Варгаши)</h4>
+                    <div class="address">рабочий посёлок Варгаши</div>
+                    <div class="contact">Уточняйте по телефону горячей линии</div>
+                    <div class="note">Раздельный сбор отходов.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+                <div class="card" data-lat="55.298297" data-lng="64.405325" data-types="upper,shoes,kids,bedding,worn">
+                    <h4>Пункт приема одежды (Красный Уралец)</h4>
+                    <div class="address">село Красный Уралец</div>
+                    <div class="contact">—</div>
+                    <div class="note">Пункт приема одежды в рамках раздельного сбора.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+                <div class="card" data-lat="55.8306057" data-lng="65.5859865" data-types="upper,shoes,kids,bedding,worn">
+                    <h4>Пункт приема одежды (Белозерское)</h4>
+                    <div class="address">село Белозерское</div>
+                    <div class="contact">—</div>
+                    <div class="note">Пункт приема одежды в рамках раздельного сбора.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-filter" id="emptyKurgan" style="display:none;">Ничего не найдено. Попробуйте изменить фильтры или запрос.</div>
+    </div>
+
+    <!-- ================= ДРУГИЕ ГОРОДА ================= -->
+    <div id="tab-russia" class="tab-content">
+        <div class="region-title">Другие города России</div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Москва</div>
+
+            <div class="group-title any">🔄 Любое состояние — сортировка и переработка</div>
+            <div class="card-grid">
+                <div class="card" data-types="upper,shoes,kids,bedding,worn">
+                    <h4>Проект «Экоточки Москвы»</h4>
+                    <div class="address">Более 840 пунктов приема по всему городу</div>
+                    <div class="contact">—</div>
+                    <div class="note">Принимают одежду, обувь, домашний текстиль, книги, игрушки. Пригодные передают нуждающимся, ветхие — на переработку.</div>
+                </div>
+                <div class="card" data-lat="55.7362" data-lng="37.7466" data-types="upper,shoes,bedding,worn">
+                    <h4>Контейнеры «ЛидерТекс» (склад, Москва)</h4>
+                    <div class="address">Перовское шоссе, 21, стр. 23</div>
+                    <div class="contact">—</div>
+                    <div class="note">Текстиль перерабатывают в регенерированную пряжу, перчатки и ветошь.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Санкт-Петербург</div>
+
+            <div class="group-title any">🔄 Любое состояние — переработка</div>
+            <div class="card-grid">
+                <div class="card" data-lat="59.9117" data-lng="30.3883" data-types="upper,shoes,bedding,worn">
+                    <h4>Контейнеры «ЛидерТекс» (склад, СПб)</h4>
+                    <div class="address">Мельничная улица, 13</div>
+                    <div class="contact">—</div>
+                    <div class="note">Принимают одежду, обувь, аксессуары и домашний текстиль.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+                <div class="card" data-types="upper,shoes,bedding,worn">
+                    <h4>Сеть приема текстиля (СПб)</h4>
+                    <div class="address">Контейнеры на контейнерных площадках</div>
+                    <div class="contact">8 (800) 550-96-77</div>
+                    <div class="note">Сеть постоянно расширяется.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Екатеринбург</div>
+
+            <div class="group-title any">🔄 Любое состояние — переработка</div>
+            <div class="card-grid">
+                <div class="card" data-lat="56.7870435" data-lng="60.532332" data-types="upper,shoes,bedding,worn">
+                    <h4>Контейнеры для сбора текстиля (Екатеринбург)</h4>
+                    <div class="address">ул. Краснолесья, 54 (Академический район) — первые адреса</div>
+                    <div class="contact">—</div>
+                    <div class="note">Планируется установить 50 контейнеров. Принимают одежду, обувь, аксессуары, постельное белье.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-block">
+            <div class="city-name">🏙️ Новосибирск</div>
+
+            <div class="group-title good">🟢 Хорошее состояние — носка и комиссия</div>
+            <div class="card-grid">
+                <div class="card" data-lat="54.98911" data-lng="82.97088" data-types="upper,shoes,kids,bedding">
+                    <h4>Пункт приема «Густо»</h4>
+                    <div class="address">ул. Владимира Заровного, 34 (Европейский Берег)</div>
+                    <div class="contact">—</div>
+                    <div class="note">Принимают женскую, мужскую, детскую одежду, обувь, сумки, постельное белье, шторы.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+
+            <div class="group-title any">🔄 Любое состояние — переработка</div>
+            <div class="card-grid">
+                <div class="card" data-lat="54.964266" data-lng="82.936294" data-types="upper,shoes,bedding,worn"
+                     data-schedule='{"days":{"0":[600,1320],"1":[600,1320],"2":[600,1320],"3":[600,1320],"4":[600,1320],"5":[600,1320],"6":[600,1320]}}'>
+                    <h4>Станция «Разделяй с МЕГОЙ»</h4>
+                    <div class="address">ТЦ «МЕГА» (внешняя парковка, столбик Б1)</div>
+                    <div class="contact">Ежедневно 10:00–22:00</div>
+                    <div class="note">Принимают одежду и текстиль.</div>
+                    <button class="map-btn">Показать на карте</button>
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-filter" id="emptyRussia" style="display:none;">Ничего не найдено. Попробуйте изменить фильтры или запрос.</div>
+    </div>
+
+    <!-- ================= ПРАВИЛА ================= -->
+    <div id="tab-rules" class="tab-content">
+        <div class="region-title">Как подготовить одежду к сдаче</div>
+
+        <ul class="rules-list">
+            <li><strong>1. Проверьте карманы.</strong> Извлеките все личные вещи, деньги, документы и мелочи.</li>
+            <li><strong>2. Постирайте.</strong> Одежда должна быть чистой, без посторонних запахов и пятен.</li>
+            <li><strong>3. Высушите.</strong> Влажные вещи не принимают: они могут заплесневеть.</li>
+            <li><strong>4. Рассортируйте по категориям.</strong> Разложите вещи по отдельным пакетам: верхняя одежда, легкая одежда, обувь, домашний текстиль.</li>
+            <li><strong>5. Упакуйте.</strong> Сложите вещи в прочный пакет или мешок. Учитывайте размер отверстия контейнера (обычно 30×70 см).</li>
+            <li><strong>6. Что НЕ принимают.</strong> Нижнее белье, носки, колготки, купальники. Ветхие вещи с сильными загрязнениями могут не принять.</li>
+            <li><strong>7. Хорошие вещи — отдельно.</strong> Одежду в отличном состоянии можно сдать в комиссионный магазин, на благотворительность или в обменник.</li>
+        </ul>
+    </div>
+
+    <!-- ================= КАЛЬКУЛЯТОР И ЧЕК-ЛИСТ ================= -->
+    <div id="tab-tools" class="tab-content">
+        <div class="region-title">Инструменты</div>
+
+        <div class="tool-box">
+            <h3>🧮 Калькулятор пользы</h3>
+            <div class="weight-row">
+                <label for="weightInput">Сколько кг одежды вы сдаёте?</label>
+                <input type="number" id="weightInput" min="0" step="0.1" value="1">
+            </div>
+            <div class="calc-grid">
+                <div class="calc-item">
+                    <div class="value" id="calcCo2">3.6</div>
+                    <div class="label">кг CO₂ не попало в атмосферу</div>
+                </div>
+                <div class="calc-item">
+                    <div class="value" id="calcWater">10 000</div>
+                    <div class="label">л воды сэкономлено</div>
+                </div>
+                <div class="calc-item">
+                    <div class="value" id="calcItems">5</div>
+                    <div class="label">вещей получат вторую жизнь</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-box">
+            <h3>✅ Чек-лист перед выездом</h3>
+
+            <label class="checklist-item">
+                <input type="checkbox" data-check>
+                <span>Постирал вещи</span>
+            </label>
+            <label class="checklist-item">
+                <input type="checkbox" data-check>
+                <span>Проверил карманы</span>
+            </label>
+            <label class="checklist-item">
+                <input type="checkbox" data-check>
+                <span>Высушил</span>
+            </label>
+            <label class="checklist-item">
+                <input type="checkbox" data-check>
+                <span>Рассортировал по категориям</span>
+            </label>
+            <label class="checklist-item">
+                <input type="checkbox" data-check>
+                <span>Упаковал в пакет</span>
+            </label>
+
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="ready-text" id="readyText">Отмечено 0 из 5</div>
+            <button class="ready-btn" id="readyBtn" disabled>Я готов!</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ================== ВКЛАДКИ ================== */
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    const filterBar = document.getElementById('filterBar');
+
+    function switchTab(name) {
+        tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        contents.forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+        filterBar.style.display = ['kurgan', 'russia'].includes(name) ? 'flex' : 'none';
+    }
+
+    tabs.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+    /* ================== ID ДЛЯ КАЖДОЙ КАРТОЧКИ ================== */
+    function hashId(str) {
+        let h = 5381;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) + h) + str.charCodeAt(i);
+        return 'c' + (h >>> 0).toString(36);
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+        const title = card.querySelector('h4')?.textContent.trim() || '';
+        const address = card.querySelector('.address')?.textContent.trim() || '';
+        card.dataset.id = hashId(title + '|' + address);
+    });
+
+    /* ================== СОХРАНЯЕМ ИСХОДНЫЙ ПОРЯДОК ================== */
+    // Запоминаем исходную позицию каждой карточки внутри её сетки
+    document.querySelectorAll('.card-grid').forEach(grid => {
+        [...grid.querySelectorAll('.card')].forEach((card, idx) => {
+            card.dataset.originalIndex = idx;
+        });
+    });
+
+    /* ================== СОСТОЯНИЕ ================== */
+    const selectedTypes = new Set();
+    let showFavoritesOnly = false;
+    let isDistanceSorted = false;
+    const favorites = new Set(JSON.parse(localStorage.getItem('textileFavorites') || '[]'));
+
+    function saveFavorites() {
+        localStorage.setItem('textileFavorites', JSON.stringify([...favorites]));
+    }
+
+    /* ================== ЗВЁЗДОЧКИ ================== */
+    document.querySelectorAll('.card').forEach(card => {
+        const star = document.createElement('button');
+        star.className = 'star-btn';
+        star.title = 'В избранное';
+        star.addEventListener('click', e => {
+            e.stopPropagation();
+            const id = card.dataset.id;
+            if (favorites.has(id)) favorites.delete(id);
+            else favorites.add(id);
+            saveFavorites();
+            updateFavoritesUI();
+            if (showFavoritesOnly) applyFilter();
+        });
+        card.appendChild(star);
+    });
+
+    function updateFavoritesUI() {
+        document.querySelectorAll('.card').forEach(card => {
+            const star = card.querySelector('.star-btn');
+            const isFav = favorites.has(card.dataset.id);
+            star.classList.toggle('active', isFav);
+            star.textContent = isFav ? '★' : '☆';
+        });
+        document.getElementById('favCount').textContent = favorites.size;
+    }
+
+    /* ================== КНОПКИ: ЗВОНОК, ПОДЕЛИТЬСЯ ================== */
+    function extractPhone(text) {
+        const m = text.match(/(\+7|8)[\d\s\-\(\)]{9,}/);
+        return m ? m[0].trim() : null;
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+        const mapBtn = card.querySelector('.map-btn');
+        const contactEl = card.querySelector('.contact');
+        const phone = contactEl ? extractPhone(contactEl.textContent) : null;
+
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+
+        if (phone) {
+            const callBtn = document.createElement('a');
+            callBtn.className = 'call-btn';
+            callBtn.href = 'tel:' + phone.replace(/[^\d+]/g, '');
+            callBtn.textContent = '📞 Позвонить';
+            actions.appendChild(callBtn);
+        }
+
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'share-btn';
+        shareBtn.textContent = '🔗 Поделиться';
+        shareBtn.addEventListener('click', () => shareCard(card));
+        actions.appendChild(shareBtn);
+
+        if (mapBtn) {
+            mapBtn.parentNode.insertBefore(actions, mapBtn);
+            actions.insertBefore(mapBtn, shareBtn);
+        } else {
+            const note = card.querySelector('.note');
+            if (note) note.after(actions);
+            else card.appendChild(actions);
+        }
+    });
+
+    async function shareCard(card) {
+        const title = card.querySelector('h4')?.textContent.trim() || '';
+        const address = card.querySelector('.address')?.textContent.trim() || '';
+        const note = card.querySelector('.note')?.textContent.trim() || '';
+        const text = `♻️ ${title}\n${address}${note ? '\n\n' + note : ''}\n\n— Переработка текстиля`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: 'Переработка текстиля', text });
+                return;
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+            }
+        }
+        copyText(text);
+    }
+
+    function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('Текст скопирован'))
+                .catch(() => fallbackCopy(text));
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showToast('Текст скопирован');
+        } catch {
+            showToast('Не удалось скопировать');
+        }
+        ta.remove();
+    }
+
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    /* ================== ФИЛЬТР ПО ТИПУ ================== */
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.type;
+            if (type === 'all') {
+                selectedTypes.clear();
+            } else {
+                if (selectedTypes.has(type)) selectedTypes.delete(type);
+                else selectedTypes.add(type);
+            }
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                if (b.dataset.type === 'all') b.classList.toggle('active', selectedTypes.size === 0);
+                else b.classList.toggle('active', selectedTypes.has(b.dataset.type));
+            });
+            applyFilter();
+        });
+    });
+
+    /* ================== ИЗБРАННОЕ ================== */
+    document.getElementById('favBtn').addEventListener('click', () => {
+        showFavoritesOnly = !showFavoritesOnly;
+        document.getElementById('favBtn').classList.toggle('active', showFavoritesOnly);
+        applyFilter();
+    });
+
+    /* ================== ПОИСК ================== */
+    document.getElementById('searchInput').addEventListener('input', applyFilter);
+
+    /* ================== ФИЛЬТРАЦИЯ ================== */
+    function applyFilter() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        document.querySelectorAll('.card').forEach(card => {
+            const types = (card.dataset.types || '').split(',');
+            const matchesType = selectedTypes.size === 0 || types.some(t => selectedTypes.has(t));
+            const matchesFav = !showFavoritesOnly || favorites.has(card.dataset.id);
+            const cardText = card.textContent.toLowerCase();
+            const matchesSearch = !query || cardText.includes(query);
+
+            card.style.display = (matchesType && matchesFav && matchesSearch) ? '' : 'none';
+        });
+
+        document.querySelectorAll('.group-title').forEach(title => {
+            const grid = title.nextElementSibling;
+            if (!grid || !grid.classList.contains('card-grid')) return;
+            const visible = [...grid.querySelectorAll('.card')].some(c => c.style.display !== 'none');
+            title.style.display = visible ? '' : 'none';
+        });
+
+        document.querySelectorAll('.city-block').forEach(block => {
+            const visible = [...block.querySelectorAll('.card')].some(c => c.style.display !== 'none');
+            block.style.display = visible ? '' : 'none';
+        });
+
+        const kurganAny = [...document.querySelectorAll('#tab-kurgan .card')].some(c => c.style.display !== 'none');
+        const russiaAny = [...document.querySelectorAll('#tab-russia .card')].some(c => c.style.display !== 'none');
+        document.getElementById('emptyKurgan').style.display = kurganAny ? 'none' : 'block';
+        document.getElementById('emptyRussia').style.display = russiaAny ? 'none' : 'block';
+    }
+
+    /* ================== СТАТУС ОТКРЫТО/ЗАКРЫТО ================== */
+    const DAY_NAMES = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+    function fmt(minutes) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    }
+
+    function getStatus(schedule) {
+        const now = new Date();
+        const day = now.getDay();
+        const mins = now.getHours() * 60 + now.getMinutes();
+        const days = schedule.days;
+
+        if (days[day]) {
+            const [start, end] = days[day];
+            if (mins >= start && mins < end) {
+                return { text: '🟢 Открыто до ' + fmt(end), className: 'open' };
+            }
+        }
+
+        for (let offset = 0; offset < 8; offset++) {
+            const checkDay = (day + offset) % 7;
+            if (!days[checkDay]) continue;
+            const [start] = days[checkDay];
+            if (offset === 0 && mins < start) {
+                return { text: '🔴 Откроется сегодня в ' + fmt(start), className: 'closed' };
+            }
+            if (offset === 1) {
+                return { text: '🔴 Откроется завтра в ' + fmt(start), className: 'closed' };
+            }
+            if (offset > 1) {
+                return { text: '🔴 Откроется в ' + DAY_NAMES[checkDay] + ' в ' + fmt(start), className: 'closed' };
+            }
+        }
+        return null;
+    }
+
+    function renderStatuses() {
+        document.querySelectorAll('.card[data-schedule]').forEach(card => {
+            let badge = card.querySelector('.status-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'status-badge';
+                card.querySelector('h4').after(badge);
+            }
+            const schedule = JSON.parse(card.dataset.schedule);
+            const status = getStatus(schedule);
+            if (status) {
+                badge.textContent = status.text;
+                badge.className = 'status-badge ' + status.className;
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+    }
+
+    renderStatuses();
+    setInterval(renderStatuses, 60000);
+
+    /* ================== КАРТЫ ================== */
+    document.querySelectorAll('.map-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const card = this.closest('.card');
+            const mapContainer = card.querySelector('.map-container');
+
+            if (mapContainer.classList.contains('visible')) {
+                mapContainer.classList.remove('visible');
+                this.textContent = 'Показать на карте';
+                return;
+            }
+
+            const lat = parseFloat(card.dataset.lat);
+            const lng = parseFloat(card.dataset.lng);
+            if (isNaN(lat) || isNaN(lng)) {
+                showToast('Для этого пункта координаты не указаны');
+                return;
+            }
+
+            if (!mapContainer.querySelector('iframe')) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+                iframe.loading = 'lazy';
+                iframe.allowFullscreen = true;
+                mapContainer.appendChild(iframe);
+            }
+
+            mapContainer.classList.add('visible');
+            this.textContent = 'Скрыть карту';
+        });
+    });
+
+    /* ================== ГЕОЛОКАЦИЯ ================== */
+    function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function sortByDistance(userLat, userLng) {
+        document.querySelectorAll('.card').forEach(card => {
+            const lat = parseFloat(card.dataset.lat);
+            const lng = parseFloat(card.dataset.lng);
+
+            let badge = card.querySelector('.distance-badge');
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.className = 'distance-badge';
+                const address = card.querySelector('.address');
+                if (address) address.after(badge);
+                else card.querySelector('h4').after(badge);
+            }
+
+            if (isNaN(lat) || isNaN(lng)) {
+                card._dist = Infinity;
+                badge.style.display = 'none';
+                return;
+            }
+
+            const d = haversine(userLat, userLng, lat, lng);
+            card._dist = d;
+            badge.textContent = '📍 ' + (d < 1 ? Math.round(d * 1000) + ' м' : d.toFixed(1) + ' км');
+            badge.style.display = 'block';
+        });
+
+        document.querySelectorAll('.card-grid').forEach(grid => {
+            const cards = [...grid.querySelectorAll('.card')];
+            cards.sort((a, b) => (a._dist ?? Infinity) - (b._dist ?? Infinity));
+            cards.forEach(c => grid.appendChild(c));
+        });
+
+        isDistanceSorted = true;
+    }
+
+    function resetSorting() {
+        document.querySelectorAll('.card-grid').forEach(grid => {
+            const cards = [...grid.querySelectorAll('.card')];
+            cards.sort((a, b) =>
+                (parseInt(a.dataset.originalIndex) || 0) - (parseInt(b.dataset.originalIndex) || 0)
+            );
+            cards.forEach(c => grid.appendChild(c));
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+            const badge = card.querySelector('.distance-badge');
+            if (badge) badge.style.display = 'none';
+            card._dist = undefined;
+        });
+
+        isDistanceSorted = false;
+    }
+
+    const geoBtn = document.getElementById('geoBtn');
+
+    geoBtn.addEventListener('click', () => {
+        // Если уже отсортировано — отключаем сортировку
+        if (isDistanceSorted) {
+            resetSorting();
+            geoBtn.classList.remove('active');
+            geoBtn.textContent = '📍 Рядом со мной';
+            showToast('Сортировка по удалённости отключена');
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            showToast('Геолокация не поддерживается браузером');
+            return;
+        }
+
+        geoBtn.disabled = true;
+        geoBtn.textContent = '⌛ Поиск...';
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                sortByDistance(pos.coords.latitude, pos.coords.longitude);
+                geoBtn.disabled = false;
+                geoBtn.textContent = '✕ Отключить сортировку';
+                geoBtn.classList.add('active');
+                showToast('Пункты отсортированы по удалённости');
+            },
+            err => {
+                geoBtn.disabled = false;
+                geoBtn.textContent = '📍 Рядом со мной';
+                let msg = 'Не удалось определить местоположение';
+                if (err.code === 1) msg = 'Доступ к геолокации запрещён';
+                else if (err.code === 2) msg = 'Местоположение недоступно';
+                else if (err.code === 3) msg = 'Превышено время ожидания';
+                showToast(msg);
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+        );
+    });
+
+    /* ================== КАЛЬКУЛЯТОР ================== */
+    const weightInput = document.getElementById('weightInput');
+    const updateCalc = () => {
+        const w = Math.max(0, parseFloat(weightInput.value) || 0);
+        document.getElementById('calcCo2').textContent = (w * 3.6).toFixed(1);
+        document.getElementById('calcWater').textContent = Math.round(w * 10000).toLocaleString('ru-RU');
+        document.getElementById('calcItems').textContent = Math.round(w * 5);
+    };
+    weightInput.addEventListener('input', updateCalc);
+    updateCalc();
+
+    /* ================== ЧЕК-ЛИСТ ================== */
+    const checks = document.querySelectorAll('[data-check]');
+    const progressBar = document.getElementById('progressBar');
+    const readyText = document.getElementById('readyText');
+    const readyBtn = document.getElementById('readyBtn');
+
+    function updateChecklist() {
+        const total = checks.length;
+        const done = [...checks].filter(c => c.checked).length;
+        progressBar.style.width = (done / total * 100) + '%';
+        progressBar.classList.toggle('done', done === total);
+        checks.forEach(c => c.closest('.checklist-item').classList.toggle('checked', c.checked));
+        readyBtn.disabled = done !== total;
+        readyText.textContent = done === total ? '🎉 Всё готово! Можно ехать.' : `Отмечено ${done} из ${total}`;
+    }
+
+    checks.forEach(c => c.addEventListener('change', updateChecklist));
+    updateChecklist();
+
+    /* ================== СТАРТ ================== */
+    updateFavoritesUI();
+    applyFilter();
+</script>
+
+</body>
+</html>
